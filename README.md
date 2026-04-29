@@ -31,7 +31,7 @@ mnist-digit-recognition/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/mnist-digit-recognition.git
+git clone https://github.com/v44heat/mnist-digit-recognition.git
 cd mnist-digit-recognition
 ```
 
