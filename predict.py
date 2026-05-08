@@ -5,13 +5,21 @@
 # ============================================================
 
 import sys
+import os
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")
+is_headless = (
+    sys.platform.startswith("linux")
+    and not os.environ.get("DISPLAY")
+    and not os.environ.get("WAYLAND_DISPLAY")
+)
+if is_headless:
+    matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from PIL import Image
-from tensorflow import keras
 
+from tensorflow import keras
+from scipy.ndimage import zoom as nd_zoom
 
 def load_model():
     try:
@@ -23,25 +31,25 @@ def load_model():
 
 
 def preprocess_image(image_path: str):
-    """
-    Load a PNG/JPG image and convert it to the 28x28 format
-    the model expects (white digit on black background).
-    Returns (28x28 array for display, 1x784 array for model).
-    """
-    # Open and convert to grayscale
     img = Image.open(image_path).convert("L")
     img_array = np.array(img).astype("float32") / 255.0
 
-    # Invert if background is white (typical paper/Paint drawings)
     if img_array.mean() > 0.5:
         img_array = 1.0 - img_array
         print("  Note: image inverted (white background detected).")
 
-    # Auto-crop: remove empty border around the digit
+    # ── NEW: Normalize stroke thickness ──────────────────────
+    from skimage.morphology import skeletonize, dilation, disk
+    binary = img_array > 0.3
+    skeleton = skeletonize(binary)
+    # Re-dilate slightly to give the model something to work with
+    img_array = dilation(skeleton.astype("float32"), disk(2))
+    # ─────────────────────────────────────────────────────────
+
+    # Auto-crop (keep your existing code)
     threshold = 0.1
     rows = np.any(img_array > threshold, axis=1)
     cols = np.any(img_array > threshold, axis=0)
-
     if rows.any() and cols.any():
         rmin, rmax = np.where(rows)[0][[0, -1]]
         cmin, cmax = np.where(cols)[0][[0, -1]]
@@ -51,16 +59,12 @@ def preprocess_image(image_path: str):
         cmin = max(0, cmin - pad)
         cmax = min(img_array.shape[1], cmax + pad)
         img_array = img_array[rmin:rmax, cmin:cmax]
-        print(f"  Auto-cropped to: {img_array.shape}")
-    else:
-        print("  Warning: no digit detected — image may be blank or too faint.")
 
-    # Resize to 28x28
     img_pil = Image.fromarray((img_array * 255).astype("uint8"))
     img_pil = img_pil.resize((28, 28), Image.LANCZOS)
     img_array = np.array(img_pil).astype("float32") / 255.0
 
-    return img_array, img_array.reshape(1, 784)
+    return img_array, img_array.reshape(1, 28, 28, 1)
 
 
 def predict(image_path: str):
@@ -102,6 +106,8 @@ def predict(image_path: str):
     out_path = "prediction_result.png"
     plt.savefig(out_path, dpi=150)
     print(f"\n  Chart saved -> {out_path}")
+    plt.show()
+    
 
 
 # ── Entry point ───────────────────────────────────────────────
