@@ -159,27 +159,6 @@ The script automatically:
 
 ---
 
-## Troubleshooting
-
-**`ModuleNotFoundError: No module named 'matplotlib'`**
-→ Your virtual environment is not activated. Run `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Mac/Linux) first.
-
-**`File not found: mnist_model.keras`**
-→ You need to train the model first. Run `python train.py`.
-
-**`ValueError: Expected shape (None, 28, 28, 1), but input has incompatible shape (1, 784)`**
-→ You have a old model saved from the previous dense architecture. Re-run `python train.py` to generate a new compatible model.
-
-**Low confidence / wrong prediction**
-→ Check the drawing tips above. The most common causes are a brush that is too thick, a digit that is too small on the canvas, or saving as JPG instead of PNG.
-
-**CUDA / GPU warnings in terminal**
-→ These are harmless. TensorFlow will fall back to CPU automatically if no GPU drivers are found.
-
-**Matplotlib window not appearing**
-→ The script auto-detects headless Linux environments and falls back to saving charts as PNG files instead. On desktop Linux, macOS, and Windows a window will open automatically.
-
----
 
 ## License
 
