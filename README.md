@@ -148,15 +148,6 @@ The script automatically:
 
 ---
 
-## Results
-
-| Metric | Old (Dense) | New (CNN) |
-|---|---|---|
-| Training accuracy | ~99.3% | ~99.8% |
-| Validation accuracy | ~98.1% | ~99.3% |
-| **Test accuracy** | **~97.7%** | **~99.1%** |
-| Paint-drawn digit accuracy | Poor | Good |
-
 ---
 
 
