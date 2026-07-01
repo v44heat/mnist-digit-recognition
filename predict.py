@@ -2,7 +2,7 @@
 #  predict.py — Predict a digit from your own image
 #  Requires: mnist_model.keras (run train.py first)
 #  Usage:    python predict.py path/to/your_digit.png
-# ============================================================
+
 
 import sys
 import os
