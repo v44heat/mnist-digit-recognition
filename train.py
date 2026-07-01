@@ -2,13 +2,13 @@
 #  train.py — Train the MNIST digit recognition model
 #  Run this ONCE to train and save the model.
 #  Usage: python train.py
-# ============================================================
+
 
 import sys
 import os
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")          # no display needed during training
+matplotlib.use("Agg")          
 import matplotlib.pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
